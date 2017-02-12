@@ -11,3 +11,13 @@ This project is a hard fork of the orphaned Flask-Session project at https://git
 Flask-Sessionstore is an extension for Flask that adds support for Server-side Session to your application.
 
 pip install flask-sessionstore
+
+## Testing
+Tests require a running version of MongoDB, Redis, and Memcached. The easiest way to get those 
+is via docker-compose. 
+`docker-compose up -d
+nosetests --with-timer
+docker-compose down`
+
+This starts up the services, runs the tests, and then stops and removes the docker images
+
