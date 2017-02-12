@@ -10,15 +10,15 @@ from setuptools import setup
 
 
 setup(
-    name='Flask-Session',
-    version='0.3.0',
-    url='https://github.com/mcrowson/flask-sessions',
+    name='Flask-Sessionstore',
+    version='0.4.0',
+    url='https://github.com/mcrowson/flask-sessionstore',
     license='BSD',
     author='Matthew Crowson',
     author_email='matthew.d.crowson@gmail.com',
     description='Adds session support to your Flask application',
     long_description=__doc__,
-    packages=['flask_sessions'],
+    packages=['flask_sessionstore'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
