@@ -69,11 +69,11 @@ class Session(object):
         config.setdefault('SESSION_REDIS', None)
         config.setdefault('SESSION_MEMCACHED', None)
         config.setdefault('SESSION_FILE_DIR',
-                          os.path.join(os.getcwd(), 'flask_session'))
+                          os.path.join(os.getcwd(), 'flask_sessionstore'))
         config.setdefault('SESSION_FILE_THRESHOLD', 500)
         config.setdefault('SESSION_FILE_MODE', 384)
         config.setdefault('SESSION_MONGODB', None)
-        config.setdefault('SESSION_MONGODB_DB', 'flask_session')
+        config.setdefault('SESSION_MONGODB_DB', 'flask_sessionstore')
         config.setdefault('SESSION_MONGODB_COLLECT', 'sessions')
         config.setdefault('SESSION_SQLALCHEMY', None)
         config.setdefault('SESSION_SQLALCHEMY_TABLE', 'sessions')

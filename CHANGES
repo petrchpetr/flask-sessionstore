@@ -42,3 +42,9 @@ Version 0.3
 - SqlAlchemySessionInterface is using LargeBinary type to store data now
 - Fixed MongoDBSessionInterface delete method not found
 - Fixed TypeError when getting store_id using a signer
+
+Version 0.4
+```````````
+
+[Fork of orphaned repo at https://github.com/fengsp/flask-session to https://github.com/mcrowson/flask-session]
+- Add support for DynamoDB backend
