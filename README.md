@@ -1,5 +1,6 @@
 Flask-Session
 =============
+This project is a hard fork of the orphaned Flask-Session project at https://github.com/fengsp/flask-session
 
 [![Build Status](https://travis-ci.org/mcrowson/flask-session.svg?branch=master)](https://travis-ci.org/mcrowson/flask-session)
 [![Documentation Status](https://readthedocs.org/projects/flask-sessionstore/badge/?version=latest)](http://flask-sessionstore.readthedocs.io/en/latest/?badge=latest)
@@ -7,6 +8,6 @@ Flask-Session
 
 [![Code Issues](https://www.quantifiedcode.com/api/v1/project/c1c6ba31dc784fd3bce16b8696b5258c/badge.svg)](https://www.quantifiedcode.com/app/project/c1c6ba31dc784fd3bce16b8696b5258c)
 
-Flask-Session is an extension for Flask that adds support for Server-side Session to your application.
+Flask-Sessionstore is an extension for Flask that adds support for Server-side Session to your application.
 
 pip install flask-sessionstore

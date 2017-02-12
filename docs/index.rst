@@ -1,9 +1,9 @@
-Flask-Session
-=============
+Flask-Sessionstore
+==================
 
-.. module:: flask.ext.session
+.. module:: flask_sessionstore
 
-Welcome to Flask-Session's documentation.  Flask-Session is an extension for
+Welcome to Flask-Sessionstore's documentation.  Flask-Sessionstore is an extension for
 `Flask`_ that adds support for Server-side ``Session`` to your application.
 Flask 0.8 or newer is required, if you are using an older version, check
 `Support for Old and New Sessions`_ out.
@@ -22,16 +22,16 @@ Installation
 
 Install the extension with the following command::
 
-    $ easy_install Flask-Session
+    $ easy_install Flask-Sessionstore
 
 or alternatively if you have pip installed::
     
-    $ pip install Flask-Session
+    $ pip install flask-sessionstore
 
 Quickstart
 ----------
 
-Flask-Session is really easy to use.
+Flask-Sessionstore is really easy to use.
 
 Basically for the common use of having one Flask application all you have to
 do is to create your Flask application, load the configuration of choice and
@@ -41,7 +41,7 @@ The ``Session`` instance is not used for direct access, you should always use
 :class:`flask.session`::
     
     from flask import Flask, session
-    from flask.ext.session import Session
+    from flask_sessionstore import Session
 
     app = Flask(__name__)
     # Check Configuration section for more details
@@ -67,7 +67,7 @@ method::
 Configuration
 -------------
 
-The following configuration values exist for Flask-Session.  Flask-Session
+The following configuration values exist for Flask-Sessionstore.  Flask-Sessionstore
 loads these values from your Flask application config, so you should configure
 your app first before you pass it to Flask-Session.  Note that these values
 cannot be modified after the ``init_app`` was applyed so make sure to not
@@ -157,7 +157,7 @@ Basically you only need to configure ``SESSION_TYPE``.
 
 .. note::
     
-    By default, all non-null sessions in Flask-Session are permanent.
+    By default, all non-null sessions in Flask-Sessionstore are permanent.
 
 .. versionadded:: 0.2
 
@@ -230,7 +230,7 @@ API
 .. autoclass:: Session
    :members: init_app
 
-.. autoclass:: flask.ext.session.sessions.ServerSideSession
+.. autoclass:: flask_sessionstore.sessions.ServerSideSession
    
    .. attribute:: sid
        
