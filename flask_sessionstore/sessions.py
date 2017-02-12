@@ -75,7 +75,7 @@ class SessionInterface(FlaskSessionInterface):
     def _get_signer(self, app):
         if not app.secret_key:
             return None
-        return Signer(app.secret_key, salt='flask-session',
+        return Signer(app.secret_key, salt='flask-sessions',
                       key_derivation='hmac')
 
 
@@ -413,10 +413,12 @@ class MongoDBSessionInterface(SessionInterface):
 
         store_id = self.key_prefix + sid
         document = self.store.find_one({'id': store_id})
-        if document and document.get('expiration') <= datetime.utcnow():
-            # Delete expired session
-            self.store.remove({'id': store_id})
-            document = None
+        if document:
+            expiration = document.get('expiration')
+            if expiration and expiration <= datetime.utcnow():
+                # Delete expired session
+                self.store.remove({'id': store_id})
+                document = None
         if document is not None:
             try:
                 val = document['val']
@@ -441,10 +443,9 @@ class MongoDBSessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         expires = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
-        self.store.update({'id': store_id},
-                          {'id': store_id,
-                           'val': val,
-                           'expiration': expires}, True)
+        self.store.update_one({'id': store_id},
+                              {"$set": {'val': val,
+                                        'expiration': expires}}, True)
         if self.use_signer:
             session_id = self._get_signer(app).sign(want_bytes(session.sid))
         else:
@@ -484,7 +485,7 @@ class SqlAlchemySessionInterface(SessionInterface):
             __tablename__ = table
 
             id = self.db.Column(self.db.Integer, primary_key=True)
-            session_id = self.db.Column(self.db.String(256), unique=True)
+            session_id = self.db.Column(self.db.String(255), unique=True)
             data = self.db.Column(self.db.LargeBinary)
             expiry = self.db.Column(self.db.DateTime)
 
@@ -496,7 +497,6 @@ class SqlAlchemySessionInterface(SessionInterface):
             def __repr__(self):
                 return '<Session data %s>' % self.data
 
-        self.db.create_all()
         self.sql_session_model = Session
 
     def open_session(self, app, request):
@@ -518,7 +518,7 @@ class SqlAlchemySessionInterface(SessionInterface):
         store_id = self.key_prefix + sid
         saved_session = self.sql_session_model.query.filter_by(
             session_id=store_id).first()
-        if saved_session and saved_session.expiry <= datetime.utcnow():
+        if saved_session and (not saved_session.expiry or saved_session.expiry <= datetime.utcnow()):
             # Delete expired session
             self.db.session.delete(saved_session)
             self.db.session.commit()

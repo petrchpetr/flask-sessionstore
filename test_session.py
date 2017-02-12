@@ -2,7 +2,7 @@ import unittest
 import tempfile
 
 import flask
-from flask.ext.session import Session
+from flask_sessionstore import Session
 
 
 class FlaskSessionTestCase(unittest.TestCase):
@@ -115,7 +115,9 @@ class FlaskSessionTestCase(unittest.TestCase):
         app.debug = True
         app.config['SESSION_TYPE'] = 'sqlalchemy'
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
-        Session(app)
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+        session = Session(app)
+        session.app.session_interface.db.create_all()
         @app.route('/set', methods=['POST'])
         def set():
             flask.session['value'] = flask.request.form['value']
@@ -141,7 +143,9 @@ class FlaskSessionTestCase(unittest.TestCase):
         app.config['SESSION_TYPE'] = 'sqlalchemy'
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
         app.config['SESSION_USE_SIGNER'] = True
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         session = Session(app)
+        session.app.session_interface.db.create_all()
         @app.route('/set', methods=['POST'])
         def set():
             flask.session['value'] = flask.request.form['value']
