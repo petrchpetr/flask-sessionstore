@@ -1,2 +1,2 @@
 include README.md LICENSE requirements.txt
-recursive-include flask_session *.py
+recursive-include flask_sessions *.py

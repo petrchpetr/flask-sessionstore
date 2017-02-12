@@ -2,7 +2,7 @@ import unittest
 import tempfile
 
 import flask
-from flask_session import Session
+from flask_sessions import Session
 
 
 class FlaskSessionTestCase(unittest.TestCase):
