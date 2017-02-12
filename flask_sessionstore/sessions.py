@@ -438,10 +438,9 @@ class MongoDBSessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         expires = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
-        self.store.update({'id': store_id},
-                          {'id': store_id,
-                           'val': val,
-                           'expiration': expires}, True)
+        self.store.update_one({'id': store_id},
+                              {"$set": {'val': val,
+                                        'expiration': expires}}, True)
         if self.use_signer:
             session_id = self._get_signer(app).sign(want_bytes(session.sid))
         else:
@@ -492,7 +491,7 @@ class SqlAlchemySessionInterface(SessionInterface):
 
             def __repr__(self):
                 return '<Session data %s>' % self.data
-        self.db.create_all()
+
         self.sql_session_model = Session
 
     def open_session(self, app, request):
