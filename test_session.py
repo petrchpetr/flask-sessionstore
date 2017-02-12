@@ -115,6 +115,7 @@ class FlaskSessionTestCase(unittest.TestCase):
         app.debug = True
         app.config['SESSION_TYPE'] = 'sqlalchemy'
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         session = Session(app)
         session.app.session_interface.db.create_all()
         @app.route('/set', methods=['POST'])
@@ -142,6 +143,7 @@ class FlaskSessionTestCase(unittest.TestCase):
         app.config['SESSION_TYPE'] = 'sqlalchemy'
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
         app.config['SESSION_USE_SIGNER'] = True
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         session = Session(app)
         session.app.session_interface.db.create_all()
         @app.route('/set', methods=['POST'])
