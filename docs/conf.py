@@ -208,7 +208,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'Flask-Session.tex', u'Flask-Session Documentation',
-   u'Shipeng Feng', 'manual'),
+   u'Matthew Crowson', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -238,7 +238,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'flask-session', u'Flask-Session Documentation',
-     [u'Shipeng Feng'], 1)
+     [u'Matthew Crowson'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -252,7 +252,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'Flask-Session', u'Flask-Session Documentation',
-   u'Shipeng Feng', 'Flask-Session', 'One line description of project.',
+   u'Matthew Crowson', 'Flask-Session', 'One line description of project.',
    'Miscellaneous'),
 ]
 
