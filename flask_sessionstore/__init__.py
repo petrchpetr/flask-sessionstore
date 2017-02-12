@@ -38,7 +38,7 @@ class Session(object):
             sess.init_app(app)
             return app
 
-    By default Flask-Session will use :class:`NullSessionInterface`, you
+    By default Flask-Sessionstore will use :class:`NullSessionInterface`, you
     really should configurate your app to use a different SessionInterface.
 
     .. note::
