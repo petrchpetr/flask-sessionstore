@@ -12,10 +12,7 @@ import sys
 import time
 from datetime import datetime
 from uuid import uuid4
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import json
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
 from flask.sessions import SessionMixin
@@ -68,6 +65,7 @@ class SqlAlchemySession(ServerSideSession):
 
 
 class SessionInterface(FlaskSessionInterface):
+    serializer = json
 
     def _generate_sid(self):
         return str(uuid4())
@@ -99,7 +97,6 @@ class RedisSessionInterface(SessionInterface):
     :param permanent: Whether to use permanent session or not.
     """
 
-    serializer = pickle
     session_class = RedisSession
 
     def __init__(self, redis, key_prefix, use_signer=False, permanent=True):
@@ -184,8 +181,6 @@ class MemcachedSessionInterface(SessionInterface):
     :param use_signer: Whether to sign the session id cookie or not.
     :param permanent: Whether to use permanent session or not.
     """
-
-    serializer = pickle
     session_class = MemcachedSession
 
     def __init__(self, client, key_prefix, use_signer=False, permanent=True):
@@ -380,8 +375,6 @@ class MongoDBSessionInterface(SessionInterface):
     :param use_signer: Whether to sign the session id cookie or not.
     :param permanent: Whether to use permanent session or not.
     """
-
-    serializer = pickle
     session_class = MongoDBSession
 
     def __init__(self, client, db, collection, key_prefix, use_signer=False,
@@ -467,8 +460,6 @@ class SqlAlchemySessionInterface(SessionInterface):
     :param use_signer: Whether to sign the session id cookie or not.
     :param permanent: Whether to use permanent session or not.
     """
-
-    serializer = pickle
     session_class = SqlAlchemySession
 
     def __init__(self, app, db, table, key_prefix, use_signer=False,
