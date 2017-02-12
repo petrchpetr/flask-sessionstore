@@ -113,7 +113,7 @@ html_theme = 'flask_small'
 # documentation.
 html_theme_options = {
     'index_logo':       'flask-session.png',
-    'github_fork':      'fengsp/flask-session'
+    'github_fork':      'mcrowson/flask-session'
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
