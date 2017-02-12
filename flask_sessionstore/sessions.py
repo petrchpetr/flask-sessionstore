@@ -408,10 +408,12 @@ class MongoDBSessionInterface(SessionInterface):
 
         store_id = self.key_prefix + sid
         document = self.store.find_one({'id': store_id})
-        if document and document.get('expiration') <= datetime.utcnow():
-            # Delete expired session
-            self.store.remove({'id': store_id})
-            document = None
+        if document:
+            expiration = document.get('expiration')
+            if expiration and expiration <= datetime.utcnow():
+                # Delete expired session
+                self.store.remove({'id': store_id})
+                document = None
         if document is not None:
             try:
                 val = document['val']
@@ -479,7 +481,7 @@ class SqlAlchemySessionInterface(SessionInterface):
             __tablename__ = table
 
             id = self.db.Column(self.db.Integer, primary_key=True)
-            session_id = self.db.Column(self.db.String(256), unique=True)
+            session_id = self.db.Column(self.db.String(255), unique=True)
             data = self.db.Column(self.db.LargeBinary)
             expiry = self.db.Column(self.db.DateTime)
 
@@ -490,7 +492,6 @@ class SqlAlchemySessionInterface(SessionInterface):
 
             def __repr__(self):
                 return '<Session data %s>' % self.data
-
         self.db.create_all()
         self.sql_session_model = Session
 

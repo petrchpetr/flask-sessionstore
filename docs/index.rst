@@ -146,7 +146,7 @@ A list of configuration keys also understood by the extension:
                               "flask_session"
 ``SESSION_MONGODB_COLLECT``   The MongoDB collection you want to use, default
                               "sessions"
-``SESSION_SQLALCHEMY``        A ``flask.ext.sqlalchemy.SQLAlchemy`` instance
+``SESSION_SQLALCHEMY``        A ``flask_sqlalchemy.SQLAlchemy`` instance
                               whose database connection URI is configured
                               using the ``SQLALCHEMY_DATABASE_URI`` parameter
 ``SESSION_SQLALCHEMY_TABLE``  The name of the SQL table you want to use,
