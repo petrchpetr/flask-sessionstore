@@ -7,11 +7,11 @@ Server-side Session to your application.
 
 """
 from setuptools import setup
-
+from flask_sessionstore import __version__
 
 setup(
     name='Flask-Sessionstore',
-    version='0.4.0',
+    version=__version__,
     url='https://github.com/mcrowson/flask-sessionstore',
     license='BSD',
     author='Matthew Crowson',
@@ -32,6 +32,7 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ]
