@@ -54,3 +54,4 @@ Version 0.4.1
 - SqlAlchemySessionInterface is using VARCHAR(255) to store session id now
 - SqlAlchemySessionInterface won't run `db.create_all` anymore
 - Docker Compose instructions for local testing
+- JSON Serializer instead of Pickle

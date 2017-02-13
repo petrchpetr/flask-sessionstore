@@ -15,9 +15,16 @@ pip install flask-sessionstore
 ## Testing
 Tests require a running version of MongoDB, Redis, and Memcached. The easiest way to get those 
 is via docker-compose. 
-`docker-compose up -d
-nosetests --with-timer
-docker-compose down`
+```bash
+$ docker-compose up -d
+$ nosetests --with-timer
+$ docker-compose down
+```
 
-This starts up the services, runs the tests, and then stops and removes the docker images
+This starts up the services, runs the tests, and then stops and removes the docker images. 
+If you would like to test the project against all supported python versions, please use 
+
+```bash
+$ tox
+```
 
