@@ -1,0 +1,25 @@
+{
+    "data": {
+        "ResponseMetadata": {
+            "HTTPStatusCode": 200,
+            "HTTPHeaders": {
+                "date": "Wed, 15 Feb 2017 04:12:35 GMT",
+                "content-type": "application/x-amz-json-1.0",
+                "content-length": "132",
+                "x-amz-crc32": "2333073112",
+                "x-amzn-requestid": "0BPTASEI3KVTCIN1TEBLED1MINVV4KQNSO5AEMVJF66Q9ASUAAJG"
+            },
+            "RequestId": "0BPTASEI3KVTCIN1TEBLED1MINVV4KQNSO5AEMVJF66Q9ASUAAJG",
+            "RetryAttempts": 0
+        },
+        "Item": {
+            "SessionId": {
+                "S": "session:910cbe59-d0ff-4086-8ccb-a409aa7f8ea9"
+            },
+            "Session": {
+                "S": "{\"_permanent\":true,\"value\":\"42\"}"
+            }
+        }
+    },
+    "status_code": 200
+}

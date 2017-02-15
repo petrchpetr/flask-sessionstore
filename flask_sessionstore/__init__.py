@@ -61,7 +61,8 @@ class Session(object):
         """
         app.session_interface = self._get_interface(app)
 
-    def _get_interface(self, app):
+    @staticmethod
+    def _get_interface(app):
         config = app.config.copy()
         config.setdefault('SESSION_TYPE', 'null')
         config.setdefault('SESSION_PERMANENT', True)

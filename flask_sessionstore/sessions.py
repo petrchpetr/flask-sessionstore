@@ -572,19 +572,26 @@ class DynamoDBSessionInterface(SessionInterface):
     :param permanent: Whether to use permanent session or not.
     """
 
-    serializer = json
     session_class = DynamoDBSession
 
     def __init__(self, session, key_prefix, table_name, aws_access_key_id=None,
                  aws_secret_access_key=None, region=None,  use_signer=False, permanent=True):
         if session is None:
-            from boto3 import Session
-            session = Session(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
-                              region_name=region)
+            import boto3
+            session = boto3.Session(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
+                                    region_name=region)
         self.client = session.client('dynamodb')
         self.key_prefix = key_prefix
         self.use_signer = use_signer
         self.permanent = permanent
+
+        if table_name not in self.client.list_tables().get(u'TableNames'):
+            raise RuntimeError("The table {0!s} does not exist in DynamoDB for the requested region of {1!s}. Please "
+                               "ensure that the table has a PrimaryKey of \"SessionID\"".format(
+                                table_name,
+                                session.region_name
+                                ))
+
         self.table_name = table_name
 
     def open_session(self, app, request):

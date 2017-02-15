@@ -1,0 +1,17 @@
+{
+    "data": {
+        "ResponseMetadata": {
+            "HTTPStatusCode": 200,
+            "HTTPHeaders": {
+                "date": "Wed, 15 Feb 2017 04:12:35 GMT",
+                "content-type": "application/x-amz-json-1.0",
+                "content-length": "2",
+                "x-amz-crc32": "2745614147",
+                "x-amzn-requestid": "I3I5DKQINPQT5Q6OUULFAPUHTNVV4KQNSO5AEMVJF66Q9ASUAAJG"
+            },
+            "RequestId": "I3I5DKQINPQT5Q6OUULFAPUHTNVV4KQNSO5AEMVJF66Q9ASUAAJG",
+            "RetryAttempts": 0
+        }
+    },
+    "status_code": 200
+}

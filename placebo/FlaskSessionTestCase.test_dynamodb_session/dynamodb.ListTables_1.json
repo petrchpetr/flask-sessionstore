@@ -1,0 +1,23 @@
+{
+    "data": {
+        "TableNames": [
+            "editors",
+            "roles",
+            "session",
+            "sessions"
+        ],
+        "ResponseMetadata": {
+            "HTTPStatusCode": 200,
+            "HTTPHeaders": {
+                "date": "Wed, 15 Feb 2017 04:12:34 GMT",
+                "content-type": "application/x-amz-json-1.0",
+                "content-length": "55",
+                "x-amz-crc32": "47318271",
+                "x-amzn-requestid": "C343AGAU8SNRMOV4J83E4LUR1FVV4KQNSO5AEMVJF66Q9ASUAAJG"
+            },
+            "RequestId": "C343AGAU8SNRMOV4J83E4LUR1FVV4KQNSO5AEMVJF66Q9ASUAAJG",
+            "RetryAttempts": 0
+        }
+    },
+    "status_code": 200
+}

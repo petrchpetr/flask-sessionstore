@@ -6,3 +6,6 @@ flask-sqlalchemy==2.1
 pynamodb==2.0.3
 redis==2.10.5
 pylibmc==1.5.1
+boto3==1.4.4
+placebo==0.8.1
+mock==2.0.0
