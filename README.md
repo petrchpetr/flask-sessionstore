@@ -1,8 +1,7 @@
 Flask-Session
 =============
 This project is a hard fork of the orphaned Flask-Session project at https://github.com/fengsp/flask-session
-
-[![Build Status](https://travis-ci.org/mcrowson/flask-session.svg?branch=master)](https://travis-ci.org/mcrowson/flask-session)
+[![Build Status](https://travis-ci.org/mcrowson/flask-sessionstore.svg?branch=master)](https://travis-ci.org/mcrowson/flask-sessionstore)
 [![Documentation Status](https://readthedocs.org/projects/flask-sessionstore/badge/?version=latest)](http://flask-sessionstore.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/mcrowson/flask-session/badge.svg)](https://coveralls.io/github/mcrowson/flask-session) 
 
