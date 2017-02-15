@@ -55,3 +55,7 @@ Version 0.4.1
 - SqlAlchemySessionInterface won't run `db.create_all` anymore
 - Docker Compose instructions for local testing
 - JSON Serializer instead of Pickle
+
+Version 0.4.2
+`````````````
+- Added `DynamoDBSessionInterface`.
