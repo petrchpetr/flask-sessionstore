@@ -46,4 +46,16 @@ Version 0.3
 Version 0.4
 ```````````
 
+[Hard Fork of orphaned repo at https://github.com/fengsp/flask-session]
+
+Version 0.4.1
+`````````````
+- Saved Session Expiry is UTC aware.
+- SqlAlchemySessionInterface is using VARCHAR(255) to store session id now
+- SqlAlchemySessionInterface won't run `db.create_all` anymore
+- Docker Compose instructions for local testing
+- JSON Serializer instead of Pickle
+
+Version 0.4.2
+`````````````
 - Added `DynamoDBSessionInterface`.

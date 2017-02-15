@@ -12,14 +12,10 @@ import sys
 import time
 from datetime import datetime
 from uuid import uuid4
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 import json
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
-from flask.sessions import SessionMixin
+from flask.sessions import SessionMixin, TaggedJSONSerializer
 from werkzeug.datastructures import CallbackDict
 from itsdangerous import Signer, BadSignature, want_bytes
 
@@ -73,6 +69,7 @@ class DynamoDBSession(ServerSideSession):
 
 
 class SessionInterface(FlaskSessionInterface):
+    serializer = TaggedJSONSerializer()
 
     def _generate_sid(self):
         return str(uuid4())
@@ -80,7 +77,7 @@ class SessionInterface(FlaskSessionInterface):
     def _get_signer(self, app):
         if not app.secret_key:
             return None
-        return Signer(app.secret_key, salt='flask-session',
+        return Signer(app.secret_key, salt='flask-sessions',
                       key_derivation='hmac')
 
 
@@ -104,7 +101,6 @@ class RedisSessionInterface(SessionInterface):
     :param permanent: Whether to use permanent session or not.
     """
 
-    serializer = pickle
     session_class = RedisSession
 
     def __init__(self, redis, key_prefix, use_signer=False, permanent=True):
@@ -189,8 +185,6 @@ class MemcachedSessionInterface(SessionInterface):
     :param use_signer: Whether to sign the session id cookie or not.
     :param permanent: Whether to use permanent session or not.
     """
-
-    serializer = pickle
     session_class = MemcachedSession
 
     def __init__(self, client, key_prefix, use_signer=False, permanent=True):
@@ -234,6 +228,15 @@ class MemcachedSessionInterface(SessionInterface):
             timeout += int(time.time())
         return timeout
 
+    def _encode_key(self, key, encoding='utf-8'):
+        if sys.version_info.major == 2:
+            if isinstance(key, unicode):
+                return key.encode(encoding)
+        else:
+            if isinstance(key, bytes):
+                return key.decode(encoding)
+        return key
+
     def open_session(self, app, request):
         sid = request.cookies.get(app.session_cookie_name)
         if not sid:
@@ -250,9 +253,7 @@ class MemcachedSessionInterface(SessionInterface):
                 sid = self._generate_sid()
                 return self.session_class(sid=sid, permanent=self.permanent)
 
-        full_session_key = self.key_prefix + sid
-        if PY2 and isinstance(full_session_key, unicode):
-            full_session_key = full_session_key.encode('utf-8')
+        full_session_key = self._encode_key(self.key_prefix) + self._encode_key(sid)
         val = self.client.get(full_session_key)
         if val is not None:
             try:
@@ -267,9 +268,7 @@ class MemcachedSessionInterface(SessionInterface):
     def save_session(self, app, session, response):
         domain = self.get_cookie_domain(app)
         path = self.get_cookie_path(app)
-        full_session_key = self.key_prefix + session.sid
-        if PY2 and isinstance(full_session_key, unicode):
-            full_session_key = full_session_key.encode('utf-8')
+        full_session_key = self._encode_key(self.key_prefix) + self._encode_key(session.sid)
         if not session:
             if session.modified:
                 self.client.delete(full_session_key)
@@ -281,7 +280,7 @@ class MemcachedSessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         expires = self.get_expiration_time(app, session)
         if not PY2:
-            val = self.serializer.dumps(dict(session), 0)
+            val = self.serializer.dumps(dict(session))
         else:
             val = self.serializer.dumps(dict(session))
         self.client.set(full_session_key, val, self._get_memcache_timeout(
@@ -380,8 +379,6 @@ class MongoDBSessionInterface(SessionInterface):
     :param use_signer: Whether to sign the session id cookie or not.
     :param permanent: Whether to use permanent session or not.
     """
-
-    serializer = pickle
     session_class = MongoDBSession
 
     def __init__(self, client, db, collection, key_prefix, use_signer=False,
@@ -413,10 +410,12 @@ class MongoDBSessionInterface(SessionInterface):
 
         store_id = self.key_prefix + sid
         document = self.store.find_one({'id': store_id})
-        if document and document.get('expiration') <= datetime.utcnow():
-            # Delete expired session
-            self.store.remove({'id': store_id})
-            document = None
+        if document:
+            expiration = document.get('expiration')
+            if expiration and expiration <= datetime.utcnow():
+                # Delete expired session
+                self.store.remove({'id': store_id})
+                document = None
         if document is not None:
             try:
                 val = document['val']
@@ -441,10 +440,9 @@ class MongoDBSessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         expires = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
-        self.store.update({'id': store_id},
-                          {'id': store_id,
-                           'val': val,
-                           'expiration': expires}, True)
+        self.store.update_one({'id': store_id},
+                              {"$set": {'val': val,
+                                        'expiration': expires}}, True)
         if self.use_signer:
             session_id = self._get_signer(app).sign(want_bytes(session.sid))
         else:
@@ -466,8 +464,6 @@ class SqlAlchemySessionInterface(SessionInterface):
     :param use_signer: Whether to sign the session id cookie or not.
     :param permanent: Whether to use permanent session or not.
     """
-
-    serializer = pickle
     session_class = SqlAlchemySession
 
     def __init__(self, app, db, table, key_prefix, use_signer=False,
@@ -484,8 +480,8 @@ class SqlAlchemySessionInterface(SessionInterface):
             __tablename__ = table
 
             id = self.db.Column(self.db.Integer, primary_key=True)
-            session_id = self.db.Column(self.db.String(256), unique=True)
-            data = self.db.Column(self.db.LargeBinary)
+            session_id = self.db.Column(self.db.String(255), unique=True)
+            data = self.db.Column(self.db.Text)
             expiry = self.db.Column(self.db.DateTime)
 
             def __init__(self, session_id, data, expiry):
@@ -496,7 +492,6 @@ class SqlAlchemySessionInterface(SessionInterface):
             def __repr__(self):
                 return '<Session data %s>' % self.data
 
-        self.db.create_all()
         self.sql_session_model = Session
 
     def open_session(self, app, request):
@@ -518,7 +513,7 @@ class SqlAlchemySessionInterface(SessionInterface):
         store_id = self.key_prefix + sid
         saved_session = self.sql_session_model.query.filter_by(
             session_id=store_id).first()
-        if saved_session and saved_session.expiry <= datetime.utcnow():
+        if saved_session and (not saved_session.expiry or saved_session.expiry <= datetime.utcnow()):
             # Delete expired session
             self.db.session.delete(saved_session)
             self.db.session.commit()
@@ -526,7 +521,7 @@ class SqlAlchemySessionInterface(SessionInterface):
         if saved_session:
             try:
                 val = saved_session.data
-                data = self.serializer.loads(want_bytes(val))
+                data = self.serializer.loads(val)
                 return self.session_class(data, sid=sid)
             except:
                 return self.session_class(sid=sid, permanent=self.permanent)

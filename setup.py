@@ -5,26 +5,20 @@ Flask-Session
 Flask-Session is an extension for Flask that adds support for 
 Server-side Session to your application.
 
-Links
-`````
-
-* `development version
-  <https://github.com/fengsp/flask-session/zipball/master#egg=Flask-dev>`_
-
 """
 from setuptools import setup
-
+from flask_sessionstore import __version__
 
 setup(
-    name='Flask-Session',
-    version='0.3.0',
-    url='https://github.com/fengsp/flask-session',
+    name='Flask-Sessionstore',
+    version=__version__,
+    url='https://github.com/mcrowson/flask-sessionstore',
     license='BSD',
-    author='Shipeng Feng',
-    author_email='fsp261@gmail.com',
-    description='Adds server-side session support to your Flask application',
+    author='Matthew Crowson',
+    author_email='matthew.d.crowson@gmail.com',
+    description='Adds session support to your Flask application',
     long_description=__doc__,
-    packages=['flask_session'],
+    packages=['flask_sessionstore'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
@@ -38,6 +32,7 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ]
