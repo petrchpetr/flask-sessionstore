@@ -50,12 +50,12 @@ The ``Session`` instance is not used for direct access, you should always use
     Session(app)
 
     @app.route('/set/')
-    def set():
+    def set_val():
         session['key'] = 'value'
         return 'ok'
 
     @app.route('/get/')
-    def get():
+    def get_val():
         return session.get('key', 'not set')
 
 You may also set up your application later using :meth:`~Session.init_app`

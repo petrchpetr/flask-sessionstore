@@ -21,13 +21,13 @@ Session(app)
 
 
 @app.route('/set/')
-def set():
+def set_val():
     session['key'] = 'value'
     return 'ok'
 
 
 @app.route('/get/')
-def get():
+def get_val():
     return session.get('key', 'not set')
 
 

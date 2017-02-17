@@ -71,10 +71,12 @@ class DynamoDBSession(ServerSideSession):
 class SessionInterface(FlaskSessionInterface):
     serializer = TaggedJSONSerializer()
 
-    def _generate_sid(self):
+    @staticmethod
+    def _generate_sid():
         return str(uuid4())
 
-    def _get_signer(self, app):
+    @staticmethod
+    def _get_signer(app):
         if not app.secret_key:
             return None
         return Signer(app.secret_key, salt='flask-sessions',
@@ -197,7 +199,8 @@ class MemcachedSessionInterface(SessionInterface):
         self.use_signer = use_signer
         self.permanent = permanent
 
-    def _get_preferred_memcache_client(self):
+    @staticmethod
+    def _get_preferred_memcache_client():
         servers = ['127.0.0.1:11211']
         try:
             import pylibmc
@@ -213,7 +216,8 @@ class MemcachedSessionInterface(SessionInterface):
         else:
             return memcache.Client(servers)
 
-    def _get_memcache_timeout(self, timeout):
+    @staticmethod
+    def _get_memcache_timeout(timeout):
         """
         Memcached deals with long (> 30 days) timeouts in a special
         way. Call this function to obtain a safe value for your timeout.
@@ -228,13 +232,12 @@ class MemcachedSessionInterface(SessionInterface):
             timeout += int(time.time())
         return timeout
 
-    def _encode_key(self, key, encoding='utf-8'):
-        if sys.version_info.major == 2:
-            if isinstance(key, unicode):
-                return key.encode(encoding)
-        else:
-            if isinstance(key, bytes):
-                return key.decode(encoding)
+    @staticmethod
+    def _encode_key(key, encoding='utf-8'):
+        if sys.version_info.major == 2 and isinstance(key, unicode):
+            return key.encode(encoding)
+        elif isinstance(key, bytes):
+            return key.decode(encoding)
         return key
 
     def open_session(self, app, request):
@@ -490,7 +493,7 @@ class SqlAlchemySessionInterface(SessionInterface):
                 self.expiry = expiry
 
             def __repr__(self):
-                return '<Session data %s>' % self.data
+                return '<Session data {0!s}>'.format(self.data)
 
         self.sql_session_model = Session
 
