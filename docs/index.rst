@@ -119,6 +119,7 @@ A list of configuration keys also understood by the extension:
                               - **filesystem**: FileSystemSessionInterface
                               - **mongodb**: MongoDBSessionInterface
                               - **sqlalchemy**: SqlAlchemySessionInterface
+                              - **dynamodb**: DynamoDBSessionInterface
 ``SESSION_PERMANENT``         Whether use permanent session or not, default
                               to be ``True``
 ``SESSION_USE_SIGNER``        Whether sign the session cookie sid or not,
@@ -243,6 +244,9 @@ Uses SQLAlchemy as a session backend. (`Flask-SQLAlchemy`_ required)
 Uses AWS DynamoDB as a session backend. (`boto3`_ required)
 
 - SESSION_DYNAMODB_TABLE
+- SESSION_DYNAMODB_KEY_ID (Optional)
+- SESSION_DYNAMODB_SECRET (Optional)
+- SESSION_DYNAMODB_REGION (Optional)
 
 .. _boto3: https://boto3.readthedocs.io/en/latest/
 
