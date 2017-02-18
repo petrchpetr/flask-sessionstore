@@ -14,7 +14,7 @@
         },
         "Item": {
             "SessionId": {
-                "S": "session:910cbe59-d0ff-4086-8ccb-a409aa7f8ea9"
+                "S": "session:asdfasdf"
             },
             "Session": {
                 "S": "{\"_permanent\":true,\"value\":\"42\"}"

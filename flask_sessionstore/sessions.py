@@ -12,7 +12,6 @@ import sys
 import time
 from datetime import datetime
 from uuid import uuid4
-import json
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
 from flask.sessions import SessionMixin, TaggedJSONSerializer
@@ -28,6 +27,7 @@ else:
 
 
 def total_seconds(td):
+    """Converts datetime object to seconds"""
     return td.days * 60 * 60 * 24 + td.seconds
 
 
