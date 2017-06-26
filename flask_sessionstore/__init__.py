@@ -84,6 +84,7 @@ class Session(object):
         config.setdefault('SESSION_DYNAMODB_KEY_ID', None)
         config.setdefault('SESSION_DYNAMODB_SECRET', None)
         config.setdefault('SESSION_DYNAMODB_REGION', None)
+        config.setdefault('SESSION_DYNAMODB_ENDPOINT_URL', None)
 
         if config['SESSION_TYPE'] == 'redis':
             session_interface = RedisSessionInterface(
@@ -115,6 +116,7 @@ class Session(object):
                 config['SESSION_DYNAMODB'], config['SESSION_KEY_PREFIX'],
                 config['SESSION_DYNAMODB_TABLE'], config['SESSION_DYNAMODB_KEY_ID'],
                 config['SESSION_DYNAMODB_SECRET'], config['SESSION_DYNAMODB_REGION'],
+                config['SESSION_DYNAMODB_ENDPOINT_URL'],
                 config['SESSION_USE_SIGNER'], config['SESSION_PERMANENT'])
         else:
             session_interface = NullSessionInterface()

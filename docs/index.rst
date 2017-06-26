@@ -110,59 +110,62 @@ to control your session lifetime.**
 A list of configuration keys also understood by the extension:
 
 ============================= ==============================================
-``SESSION_TYPE``              Specifies which type of session interface to
-                              use.  Built-in session types:
+``SESSION_TYPE``                    Specifies which type of session interface to
+                                    use.  Built-in session types:
 
-                              - **null**: NullSessionInterface (default)
-                              - **redis**: RedisSessionInterface
-                              - **memcached**: MemcachedSessionInterface
-                              - **filesystem**: FileSystemSessionInterface
-                              - **mongodb**: MongoDBSessionInterface
-                              - **sqlalchemy**: SqlAlchemySessionInterface
-                              - **dynamodb**: DynamoDBSessionInterface
-``SESSION_PERMANENT``         Whether use permanent session or not, default
-                              to be ``True``
-``SESSION_USE_SIGNER``        Whether sign the session cookie sid or not,
-                              if set to ``True``, you have to set
-                              :attr:`flask.Flask.secret_key`, default to be
-                              ``False``
-``SESSION_KEY_PREFIX``        A prefix that is added before all session keys.
-                              This makes it possible to use the same backend
-                              storage server for different apps, default 
-                              "session:"
-``SESSION_REDIS``             A ``redis.Redis`` instance, default connect to
-                              ``127.0.0.1:6379``
-``SESSION_MEMCACHED``         A ``memcache.Client`` instance, default connect
-                              to ``127.0.0.1:11211``
-``SESSION_FILE_DIR``          The directory where session files are stored.
-                              Default to use `flask_session` directory under
-                              current working directory.
-``SESSION_FILE_THRESHOLD``    The maximum number of items the session stores
-                              before it starts deleting some, default 500
-``SESSION_FILE_MODE``         The file mode wanted for the session files,
-                              default 0600
-``SESSION_MONGODB``           A ``pymongo.MongoClient`` instance, default
-                              connect to ``127.0.0.1:27017``
-``SESSION_MONGODB_DB``        The MongoDB database you want to use, default
-                              "flask_session"
-``SESSION_MONGODB_COLLECT``   The MongoDB collection you want to use, default
-                              "sessions"
-``SESSION_SQLALCHEMY``        A ``flask_sqlalchemy.SQLAlchemy`` instance
-                              whose database connection URI is configured
-                              using the ``SQLALCHEMY_DATABASE_URI`` parameter
-``SESSION_SQLALCHEMY_TABLE``  The name of the SQL table you want to use,
-                              default "sessions"
-``SESSION_DYNAMODB``          A ``boto3.Session`` instance, default creates an
-                              instance with credentials in environment variables
-                              or in the local aws config.
-``SESSION_DYNAMODB_KEY_ID``   The AWS key id for connecting to Dynamo. Uses environment
-                              variable or local config if not set.
-``SESSION_DYNAMODB_SECRET``   The AWS secret access key for connecting to Dynamo. Uses
-                              environment variable or local config if not set.
-``SESSION_DYNAMODB_REGION``   The region where the dynamodb table is located. Uses
-                              environment variable or the local config if not set.
-``SESSION_DYNAMODB_TABLE``    The name of the table in DyanmoDB to store session
-                              data. Default is "sessions".
+                                    - **null**: NullSessionInterface (default)
+                                    - **redis**: RedisSessionInterface
+                                    - **memcached**: MemcachedSessionInterface
+                                    - **filesystem**: FileSystemSessionInterface
+                                    - **mongodb**: MongoDBSessionInterface
+                                    - **sqlalchemy**: SqlAlchemySessionInterface
+                                    - **dynamodb**: DynamoDBSessionInterface
+``SESSION_PERMANENT``               Whether use permanent session or not, default
+                                    to be ``True``
+``SESSION_USE_SIGNER``              Whether sign the session cookie sid or not,
+                                    if set to ``True``, you have to set
+                                    :attr:`flask.Flask.secret_key`, default to be
+                                    ``False``
+``SESSION_KEY_PREFIX``              A prefix that is added before all session keys.
+                                    This makes it possible to use the same backend
+                                    storage server for different apps, default 
+                                    "session:"
+``SESSION_REDIS``                   A ``redis.Redis`` instance, default connect to
+                                    ``127.0.0.1:6379``
+``SESSION_MEMCACHED``               A ``memcache.Client`` instance, default connect
+                                    to ``127.0.0.1:11211``
+``SESSION_FILE_DIR``                The directory where session files are stored.
+                                    Default to use `flask_session` directory under
+                                    current working directory.
+``SESSION_FILE_THRESHOLD``          The maximum number of items the session stores
+                                    before it starts deleting some, default 500
+``SESSION_FILE_MODE``               The file mode wanted for the session files,
+                                    default 0600
+``SESSION_MONGODB``                 A ``pymongo.MongoClient`` instance, default
+                                    connect to ``127.0.0.1:27017``
+``SESSION_MONGODB_DB``              The MongoDB database you want to use, default
+                                    "flask_session"
+``SESSION_MONGODB_COLLECT``         The MongoDB collection you want to use, default
+                                    "sessions"
+``SESSION_SQLALCHEMY``              A ``flask_sqlalchemy.SQLAlchemy`` instance
+                                    whose database connection URI is configured
+                                    using the ``SQLALCHEMY_DATABASE_URI`` parameter
+``SESSION_SQLALCHEMY_TABLE``        The name of the SQL table you want to use,
+                                    default "sessions"
+``SESSION_DYNAMODB``                A ``boto3.Session`` instance, default creates an
+                                    instance with credentials in environment variables
+                                    or in the local aws config.
+``SESSION_DYNAMODB_KEY_ID``         The AWS key id for connecting to Dynamo. Uses environment
+                                    variable or local config if not set.
+``SESSION_DYNAMODB_SECRET``         The AWS secret access key for connecting to Dynamo. Uses
+                                    environment variable or local config if not set.
+``SESSION_DYNAMODB_REGION``         The region where the dynamodb table is located. Uses
+                                    environment variable or the local config if not set.
+``SESSION_DYNAMODB_TABLE``          The name of the table in DyanmoDB to store session
+                                    data. Default is "sessions".
+``SESSION_DYNAMODB_ENDPOINT_URL``   The endpoint url for connecting to Dynamo. Uses
+                                    region default if not set. Particularly useful
+                                    for testing with local dynamodb.
 ============================= ==============================================
 
 Basically you only need to configure ``SESSION_TYPE``.
@@ -247,6 +250,7 @@ Uses AWS DynamoDB as a session backend. (`boto3`_ required)
 - SESSION_DYNAMODB_KEY_ID (Optional)
 - SESSION_DYNAMODB_SECRET (Optional)
 - SESSION_DYNAMODB_REGION (Optional)
+- SESSION_DYNAMODB_ENDPOINT_URL (Optional)
 
 .. _boto3: https://boto3.readthedocs.io/en/latest/
 
