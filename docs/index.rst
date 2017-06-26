@@ -163,6 +163,9 @@ A list of configuration keys also understood by the extension:
                               environment variable or the local config if not set.
 ``SESSION_DYNAMODB_TABLE``    The name of the table in DyanmoDB to store session
                               data. Default is "sessions".
+``SESSION_DYNAMODB_ENDPOINT_URL``   The endpoint url for connecting to Dynamo. Uses
+                                    region default if not set. Particularly useful
+                                    for testing with local dynamodb.
 ============================= ==============================================
 
 Basically you only need to configure ``SESSION_TYPE``.
@@ -247,6 +250,7 @@ Uses AWS DynamoDB as a session backend. (`boto3`_ required)
 - SESSION_DYNAMODB_KEY_ID (Optional)
 - SESSION_DYNAMODB_SECRET (Optional)
 - SESSION_DYNAMODB_REGION (Optional)
+- SESSION_DYNAMODB_ENDPOINT_URL (Optional)
 
 .. _boto3: https://boto3.readthedocs.io/en/latest/
 
