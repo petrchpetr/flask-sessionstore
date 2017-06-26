@@ -578,12 +578,12 @@ class DynamoDBSessionInterface(SessionInterface):
     session_class = DynamoDBSession
 
     def __init__(self, session, key_prefix, table_name, aws_access_key_id=None,
-                 aws_secret_access_key=None, region=None,  use_signer=False, permanent=True):
+                 aws_secret_access_key=None, region=None, endpoint_url=None, use_signer=False, permanent=True):
         if session is None:
             import boto3
             session = boto3.Session(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
                                     region_name=region)
-        self.client = session.client('dynamodb')
+        self.client = session.client('dynamodb', endpoint_url=endpoint_url)
         self.key_prefix = key_prefix
         self.use_signer = use_signer
         self.permanent = permanent
