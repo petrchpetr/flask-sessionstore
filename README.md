@@ -1,6 +1,7 @@
 Flask-Sessionstore
 ==================
-[![Build Status](https://travis-ci.org/mcrowson/flask-sessionstore.svg?branch=master)](https://travis-ci.org/mcrowson/flask-sessionstore)
+This project is no longer maintained.
+
 [![Documentation Status](https://readthedocs.org/projects/flask-sessionstore/badge/?version=latest)](http://flask-sessionstore.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/mcrowson/flask-session/badge.svg)](https://coveralls.io/github/mcrowson/flask-session) 
 
