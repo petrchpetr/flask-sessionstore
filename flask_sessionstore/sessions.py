@@ -693,7 +693,7 @@ class RESTAPISessionInterface(SessionInterface):
     session_class = RESTAPISession
 
     def __init__(self, endpoint_url=None, use_signer=False, permanent=True):
-
+        self.endpoint_url = endpoint_url
         self.use_signer = use_signer
         self.permanent = permanent
 
@@ -718,7 +718,7 @@ class RESTAPISessionInterface(SessionInterface):
 
         
 
-        val = requests.get(self.url,{"sid": sid})
+        val = requests.get(self.endpoint_url,{"sid": sid})
         if val is not None:
             try:
                 data = response.json()
@@ -753,7 +753,7 @@ class RESTAPISessionInterface(SessionInterface):
         path = self.get_cookie_path(app)
         if not session:
             if session.modified:
-                requests.delete(self.url, {"sid": sid})
+                requests.delete(self.endpoint_url, {"sid": sid})
 
                 # self.client.delete_item(
                 #     TableName=self.table_name,
@@ -772,7 +772,7 @@ class RESTAPISessionInterface(SessionInterface):
         expires = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
         
-        requests.put(self.url,{'sid': sid, 'val': val})
+        requests.put(self.endpoint_url,{'sid': sid, 'val': val})
         
         # self.client.put_item(
         #     TableName=self.table_name,

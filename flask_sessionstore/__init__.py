@@ -16,7 +16,7 @@ import os
 from .sessions import NullSessionInterface, RedisSessionInterface, \
     MemcachedSessionInterface, FileSystemSessionInterface, \
     MongoDBSessionInterface, SqlAlchemySessionInterface, \
-    DynamoDBSessionInterface
+    DynamoDBSessionInterface, RESTAPISessionInterface
 
 
 class Session(object):
@@ -118,6 +118,10 @@ class Session(object):
                 config['SESSION_DYNAMODB_SECRET'], config['SESSION_DYNAMODB_REGION'],
                 config['SESSION_DYNAMODB_ENDPOINT_URL'],
                 config['SESSION_USE_SIGNER'], config['SESSION_PERMANENT'])
+        elif config['SESSION_TYPE'] == 'restapi':
+            session_interface = RESTAPISessionInterface(                
+                config['SESSION_RESTAPI_ENDPOINT_URL'],
+                config['SESSION_USE_SIGNER'], config['SESSION_PERMANENT'])                
         else:
             session_interface = NullSessionInterface()
 
