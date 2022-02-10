@@ -69,6 +69,8 @@ class SqlAlchemySession(ServerSideSession):
 class DynamoDBSession(ServerSideSession):
     pass
 
+class RESTAPISession(ServerSideSession):
+    pass
 
 class SessionInterface(FlaskSessionInterface):
     serializer = TaggedJSONSerializer()
@@ -688,7 +690,7 @@ class RESTAPISessionInterface(SessionInterface):
     :param permanent: Whether to use permanent session or not.
     """
 
-    session_class = DynamoDBSession
+    session_class = RESTAPISession
 
     def __init__(self, endpoint_url=None, use_signer=False, permanent=True):
 
