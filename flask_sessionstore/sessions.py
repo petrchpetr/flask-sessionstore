@@ -13,6 +13,7 @@ import time
 from datetime import datetime
 from uuid import uuid4
 import requests
+from logging import getLogger
 
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
@@ -20,6 +21,7 @@ from flask.sessions import SessionMixin, TaggedJSONSerializer
 from werkzeug.datastructures import CallbackDict
 from itsdangerous import Signer, BadSignature, want_bytes
 
+log = getLogger('SESSSTOR')
 
 PY2 = sys.version_info[0] == 2
 if not PY2:
@@ -696,6 +698,7 @@ class RESTAPISessionInterface(SessionInterface):
         self.endpoint_url = endpoint_url
         self.use_signer = use_signer
         self.permanent = permanent
+        log.info(f"RESTAPISessionInterface({endpoint_url})")
 
     def open_session(self, app, request):
         sid = request.cookies.get(app.session_cookie_name)
