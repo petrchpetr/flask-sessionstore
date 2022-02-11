@@ -701,6 +701,7 @@ class RESTAPISessionInterface(SessionInterface):
         log.info(f"RESTAPISessionInterface({endpoint_url})")
 
     def open_session(self, app, request):
+        log.info("open_session")
         sid = request.cookies.get(app.session_cookie_name)
         if not sid:
             sid = self._generate_sid()
@@ -752,6 +753,7 @@ class RESTAPISessionInterface(SessionInterface):
         # return self.session_class(sid=sid, permanent=self.permanent)
 
     def save_session(self, app, session, response):
+        log.info("save_session")
         domain = self.get_cookie_domain(app)
         path = self.get_cookie_path(app)
         if not session:
@@ -775,7 +777,7 @@ class RESTAPISessionInterface(SessionInterface):
         expires = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
         
-        requests.put(self.endpoint_url,{'sid': sid, 'val': val})
+        requests.put(self.endpoint_url,{'sid': session.sid, 'val': val})
         
         # self.client.put_item(
         #     TableName=self.table_name,
