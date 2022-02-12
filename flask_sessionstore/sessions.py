@@ -13,8 +13,9 @@ import time
 from datetime import datetime
 from uuid import uuid4
 import requests
-from logging import getLogger
-
+from logging import getLogger, DEBUG
+import json
+from pprint import pprint
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
 from flask.sessions import SessionMixin, TaggedJSONSerializer
@@ -29,6 +30,16 @@ if not PY2:
 else:
     text_type = unicode
 
+try:
+    import http.client as http_client
+except ImportError:
+    # Python 2
+    import httplib as http_client
+http_client.HTTPConnection.debuglevel = 1    
+
+requests_log = getLogger("requests.packages.urllib3")
+requests_log.setLevel(DEBUG)
+requests_log.propagate = True
 
 def total_seconds(td):
     """Converts datetime object to seconds"""
@@ -722,10 +733,13 @@ class RESTAPISessionInterface(SessionInterface):
 
         
 
-        val = requests.get(self.endpoint_url,{"sid": sid})
-        if val is not None:
+        response = requests.get(self.endpoint_url,{"sid": sid})
+        if response is not None:
+            print("session val")
+            pprint(response)
             try:
                 data = response.json()
+                pprint(data)
                 return self.session_class(data, sid=sid)
             except:
                 return self.session_class(sid=sid, permanent=self.permanent)
@@ -776,8 +790,8 @@ class RESTAPISessionInterface(SessionInterface):
         secure = self.get_cookie_secure(app)
         expires = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
-        
-        requests.put(self.endpoint_url,{'sid': session.sid, 'val': val})
+        headers = {"Content-Type": "application/json"}
+        requests.put(self.endpoint_url,data=json.dumps({'sid': session.sid, 'detail': val}))
         
         # self.client.put_item(
         #     TableName=self.table_name,
