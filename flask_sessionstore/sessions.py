@@ -12,12 +12,17 @@ import sys
 import time
 from datetime import datetime
 from uuid import uuid4
+import requests
+from logging import getLogger, DEBUG
+import json
+from pprint import pprint
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
 from flask.sessions import SessionMixin, TaggedJSONSerializer
 from werkzeug.datastructures import CallbackDict
 from itsdangerous import Signer, BadSignature, want_bytes
 
+log = getLogger('SESSSTOR')
 
 PY2 = sys.version_info[0] == 2
 if not PY2:
@@ -25,6 +30,16 @@ if not PY2:
 else:
     text_type = unicode
 
+try:
+    import http.client as http_client
+except ImportError:
+    # Python 2
+    import httplib as http_client
+http_client.HTTPConnection.debuglevel = 1    
+
+requests_log = getLogger("requests.packages.urllib3")
+requests_log.setLevel(DEBUG)
+requests_log.propagate = True
 
 def total_seconds(td):
     """Converts datetime object to seconds"""
@@ -67,6 +82,8 @@ class SqlAlchemySession(ServerSideSession):
 class DynamoDBSession(ServerSideSession):
     pass
 
+class RESTAPISession(ServerSideSession):
+    pass
 
 class SessionInterface(FlaskSessionInterface):
     serializer = TaggedJSONSerializer()
@@ -666,6 +683,127 @@ class DynamoDBSessionInterface(SessionInterface):
                 }
             }
         )
+
+        if self.use_signer:
+            session_id = self._get_signer(app).sign(want_bytes(session.sid))
+        else:
+            session_id = session.sid
+        response.set_cookie(app.session_cookie_name, session_id,
+                            expires=expires, httponly=httponly,
+                            domain=domain, path=path, secure=secure)
+
+
+
+class RESTAPISessionInterface(SessionInterface):
+    """Uses the RESTAPI as a session backend.
+
+    :param session: A ``boto3.Session`` instance.
+    :param key_prefix: A prefix that is added to all DynamoDB store keys.
+    :param use_signer: Whether to sign the session id cookie or not.
+    :param permanent: Whether to use permanent session or not.
+    """
+
+    session_class = RESTAPISession
+
+    def __init__(self, endpoint_url=None, use_signer=False, permanent=True):
+        self.endpoint_url = endpoint_url
+        self.use_signer = use_signer
+        self.permanent = permanent
+        log.info(f"RESTAPISessionInterface({endpoint_url})")
+
+    def open_session(self, app, request):
+        log.info("open_session")
+        sid = request.cookies.get(app.session_cookie_name)
+        if not sid:
+            sid = self._generate_sid()
+            return self.session_class(sid=sid, permanent=self.permanent)
+        if self.use_signer:
+            signer = self._get_signer(app)
+            if signer is None:
+                return None
+            try:
+                sid_as_bytes = signer.unsign(sid)
+                sid = sid_as_bytes.decode()
+            except BadSignature:
+                sid = self._generate_sid()
+                return self.session_class(sid=sid, permanent=self.permanent)
+
+        if not PY2 and not isinstance(sid, text_type):
+            sid = sid.decode('utf-8', 'strict')
+
+        
+
+        response = requests.get(self.endpoint_url,{"sid": sid})
+        if response is not None:
+            print("session val")
+            pprint(response)
+            try:
+                data = response.json()
+                pprint(data)
+                return self.session_class(data, sid=sid)
+            except:
+                return self.session_class(sid=sid, permanent=self.permanent)
+        return self.session_class(sid=sid, permanent=self.permanent)
+
+        data = response.json()
+        pprint(data)
+    
+        # response = self.client.get_item(
+        #     TableName=self.table_name,
+        #     Key={
+        #         'SessionId': {
+        #             'S': self.key_prefix + sid
+        #         }
+        #     }
+        # )
+
+        # val = response.get(u'Item', {}).get('Session', {}).get(u'S')
+        # if val is not None:
+        #     try:
+        #         data = self.serializer.loads(val)
+        #         return self.session_class(data, sid=sid)
+        #     except:
+        #         return self.session_class(sid=sid, permanent=self.permanent)
+        # return self.session_class(sid=sid, permanent=self.permanent)
+
+    def save_session(self, app, session, response):
+        log.info("save_session")
+        domain = self.get_cookie_domain(app)
+        path = self.get_cookie_path(app)
+        if not session:
+            if session.modified:
+                requests.delete(self.endpoint_url, {"sid": sid})
+
+                # self.client.delete_item(
+                #     TableName=self.table_name,
+                #     Key={
+                #         'SessionId': {
+                #             'S': self.key_prefix + session.sid
+                #         }
+                #     }
+                # )
+                response.delete_cookie(app.session_cookie_name,
+                                       domain=domain, path=path)
+            return
+
+        httponly = self.get_cookie_httponly(app)
+        secure = self.get_cookie_secure(app)
+        expires = self.get_expiration_time(app, session)
+        val = self.serializer.dumps(dict(session))
+        headers = {"Content-Type": "application/json"}
+        requests.put(self.endpoint_url,data=json.dumps({'sid': session.sid, 'detail': val}))
+        
+        # self.client.put_item(
+        #     TableName=self.table_name,
+        #     Item={
+        #         'SessionId': {
+        #             'S': self.key_prefix + session.sid
+        #         },
+        #         'Session': {
+        #             'S': val
+        #         }
+        #     }
+        # )
 
         if self.use_signer:
             session_id = self._get_signer(app).sign(want_bytes(session.sid))

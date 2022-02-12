@@ -12,12 +12,15 @@
 __version__ = '0.4.5'
 
 import os
+from logging import getLogger,DEBUG
 
 from .sessions import NullSessionInterface, RedisSessionInterface, \
     MemcachedSessionInterface, FileSystemSessionInterface, \
     MongoDBSessionInterface, SqlAlchemySessionInterface, \
-    DynamoDBSessionInterface
+    DynamoDBSessionInterface, RESTAPISessionInterface
 
+log = getLogger("SESSSTOR")
+log.setLevel(DEBUG)
 
 class Session(object):
     """This class is used to add Server-side Session to one or more Flask
@@ -60,10 +63,11 @@ class Session(object):
         :param app: the Flask app object with proper configuration.
         """
         app.session_interface = self._get_interface(app)
-
+ 
     @staticmethod
     def _get_interface(app):
         config = app.config.copy()
+        log.info("SESSION_TYPE(config['SESSION_TYPE'])")
         config.setdefault('SESSION_TYPE', 'null')
         config.setdefault('SESSION_PERMANENT', True)
         config.setdefault('SESSION_USE_SIGNER', False)
@@ -85,6 +89,7 @@ class Session(object):
         config.setdefault('SESSION_DYNAMODB_SECRET', None)
         config.setdefault('SESSION_DYNAMODB_REGION', None)
         config.setdefault('SESSION_DYNAMODB_ENDPOINT_URL', None)
+        config.setdefault('SESSION_RESTAPI_ENDPOINT_URL','http://localhost:5000')
 
         if config['SESSION_TYPE'] == 'redis':
             session_interface = RedisSessionInterface(
@@ -118,7 +123,14 @@ class Session(object):
                 config['SESSION_DYNAMODB_SECRET'], config['SESSION_DYNAMODB_REGION'],
                 config['SESSION_DYNAMODB_ENDPOINT_URL'],
                 config['SESSION_USE_SIGNER'], config['SESSION_PERMANENT'])
+        elif config['SESSION_TYPE'] == 'restapi':
+            log.warning("RESTAPISessionInterface")
+
+            session_interface = RESTAPISessionInterface(                
+                config['SESSION_RESTAPI_ENDPOINT_URL'],
+                config['SESSION_USE_SIGNER'], config['SESSION_PERMANENT'])                
         else:
+            log.warning("NullSessionInterface")
             session_interface = NullSessionInterface()
 
         return session_interface
