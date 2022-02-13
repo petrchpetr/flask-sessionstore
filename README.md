@@ -21,6 +21,8 @@ Please see the [Documentation](flask-sessionstore.rtfd.io) for implementation an
 pip install flask-sessionstore
 ```
 
+A note about this fork https://github.com/petrchpetr/flask-sessionstore - added a support for RESTAPI backend - requires only `requests` as very simple to use. Testing not done properly, requires some minimal api backend with one endpoint and PUT,DELETE,GET methods implemented. `SESSION_RESTAPI_ENDPOINT_URL` points to the api endpoint.
+
 ## Testing
 Tests require a running version of MongoDB, Redis, and Memcached. The easiest way to get those 
 is via docker-compose. 

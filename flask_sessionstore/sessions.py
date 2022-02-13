@@ -15,7 +15,7 @@ from uuid import uuid4
 import requests
 from logging import getLogger, DEBUG
 import json
-from pprint import pprint
+from pprint import pprint, pformat
 
 from flask.sessions import SessionInterface as FlaskSessionInterface
 from flask.sessions import SessionMixin, TaggedJSONSerializer
@@ -735,36 +735,14 @@ class RESTAPISessionInterface(SessionInterface):
 
         response = requests.get(self.endpoint_url,{"sid": sid})
         if response is not None:
-            print("session val")
-            pprint(response)
+            log.debug("session val")
             try:
                 data = response.json()
-                pprint(data)
+                log.debug(pformat(data))
                 return self.session_class(data, sid=sid)
             except:
                 return self.session_class(sid=sid, permanent=self.permanent)
         return self.session_class(sid=sid, permanent=self.permanent)
-
-        data = response.json()
-        pprint(data)
-    
-        # response = self.client.get_item(
-        #     TableName=self.table_name,
-        #     Key={
-        #         'SessionId': {
-        #             'S': self.key_prefix + sid
-        #         }
-        #     }
-        # )
-
-        # val = response.get(u'Item', {}).get('Session', {}).get(u'S')
-        # if val is not None:
-        #     try:
-        #         data = self.serializer.loads(val)
-        #         return self.session_class(data, sid=sid)
-        #     except:
-        #         return self.session_class(sid=sid, permanent=self.permanent)
-        # return self.session_class(sid=sid, permanent=self.permanent)
 
     def save_session(self, app, session, response):
         log.info("save_session")
@@ -772,16 +750,8 @@ class RESTAPISessionInterface(SessionInterface):
         path = self.get_cookie_path(app)
         if not session:
             if session.modified:
-                requests.delete(self.endpoint_url, {"sid": sid})
+                requests.delete(self.endpoint_url, {"sid": session.sid})
 
-                # self.client.delete_item(
-                #     TableName=self.table_name,
-                #     Key={
-                #         'SessionId': {
-                #             'S': self.key_prefix + session.sid
-                #         }
-                #     }
-                # )
                 response.delete_cookie(app.session_cookie_name,
                                        domain=domain, path=path)
             return
@@ -793,17 +763,6 @@ class RESTAPISessionInterface(SessionInterface):
         headers = {"Content-Type": "application/json"}
         requests.put(self.endpoint_url,data=json.dumps({'sid': session.sid, 'detail': val}))
         
-        # self.client.put_item(
-        #     TableName=self.table_name,
-        #     Item={
-        #         'SessionId': {
-        #             'S': self.key_prefix + session.sid
-        #         },
-        #         'Session': {
-        #             'S': val
-        #         }
-        #     }
-        # )
 
         if self.use_signer:
             session_id = self._get_signer(app).sign(want_bytes(session.sid))
